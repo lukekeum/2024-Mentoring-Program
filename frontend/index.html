@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <title>카운터 앱</title>
+    <style>
+      body {
+        background-color: black;
+        color: white;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>카운터 앱</h1>
+    <h2>0</h2>
+    <button onclick="plus()">+1</button>
+    <button onclick="minus()">-1</button>
+    <div>
+      <button onclick="save()">저장하기</button>
+      <button onclick="load()">불러오기</button>
+    </div>
+    <script>
+      const http = new XMLHttpRequest();
+      const url = 'http://127.0.0.1:4000';
+
+      let number = 0;
+
+      function plus() {
+        number += 1;
+        document.getElementsByTagName('h2')[0].innerText = number;
+      }
+      function minus() {
+        number -= 1;
+        document.getElementsByTagName('h2')[0].innerText = number;
+      }
+      function save() {
+        http.open('POST', url);
+        http.setRequestHeader('content-type', 'application/json');
+
+        http.send(
+          JSON.stringify({
+            number: number,
+          })
+        );
+      }
+      function load() {
+        http.open('GET', url);
+
+        http.onreadystatechange = function () {
+          number = Number(http.responseText);
+          document.getElementsByTagName('h2')[0].innerText = number;
+        };
+
+        http.send();
+      }
+    </script>
+  </body>
+</html>
